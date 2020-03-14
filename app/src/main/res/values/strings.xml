@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Lifecycle Weather</string>
+    <string name="app_name">Tweet Explorer</string>
     <string name="forecast_for">Forecast for</string>
     <string name="loading_error_message">Woops.  We couldn\'t load your forecast.  Check your internet connection and try again.</string>
     <string name="action_share">Share forecast</string>

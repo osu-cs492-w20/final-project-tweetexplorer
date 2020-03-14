@@ -1,4 +1,4 @@
-package com.example.android.lifecycleweather;
+package com.example.android.tweetexplorer;
 
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,13 +8,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.example.android.lifecycleweather.data.ForecastItem;
-import com.example.android.lifecycleweather.data.WeatherPreferences;
-import com.example.android.lifecycleweather.utils.OpenWeatherMapUtils;
+import com.example.android.tweetexplorer.data.ForecastItem;
+import com.example.android.tweetexplorer.data.WeatherPreferences;
+import com.example.android.tweetexplorer.utils.OpenWeatherMapUtils;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.List;
 
 public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastItemViewHolder> {
 

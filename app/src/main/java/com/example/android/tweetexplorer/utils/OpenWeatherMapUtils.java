@@ -1,15 +1,13 @@
-package com.example.android.lifecycleweather.utils;
+package com.example.android.tweetexplorer.utils;
 
 import android.net.Uri;
 
-import com.example.android.lifecycleweather.data.ForecastItem;
+import com.example.android.tweetexplorer.data.ForecastItem;
 import com.google.gson.Gson;
 
-import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.TimeZone;
 
 public class OpenWeatherMapUtils {
