@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.android.lifecycleweather">
+    package="com.example.android.tweetexplorer">
 
     <application
         android:allowBackup="true"
@@ -10,10 +10,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".SettingsActivity"
-            android:parentActivityName=".MainActivity"></activity>
+            android:name="com.example.android.tweetexplorer.SettingsActivity"
+            android:parentActivityName="com.example.android.tweetexplorer.MainActivity"></activity>
         <activity
-            android:name=".MainActivity"
+            android:name="com.example.android.tweetexplorer.MainActivity"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,11 +23,11 @@
         </activity>
 
         <activity
-            android:name=".ForecastItemDetailActivity"
-            android:parentActivityName=".MainActivity">
+            android:name="com.example.android.tweetexplorer.ForecastItemDetailActivity"
+            android:parentActivityName="com.example.android.tweetexplorer.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value="com.example.android.tweetexplorer.MainActivity" />
         </activity>
 
     </application>

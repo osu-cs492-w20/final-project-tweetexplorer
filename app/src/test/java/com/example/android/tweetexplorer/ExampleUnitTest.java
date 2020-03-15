@@ -1,4 +1,4 @@
-package com.example.android.lifecycleweather;
+package com.example.android.tweetexplorer;
 
 import org.junit.Test;
 

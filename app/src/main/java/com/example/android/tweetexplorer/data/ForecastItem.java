@@ -1,4 +1,4 @@
-package com.example.android.lifecycleweather.data;
+package com.example.android.tweetexplorer.data;
 
 import java.io.Serializable;
 import java.util.Date;

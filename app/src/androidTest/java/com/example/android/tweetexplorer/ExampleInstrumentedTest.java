@@ -1,4 +1,4 @@
-package com.example.android.lifecycleweather;
+package com.example.android.tweetexplorer;
 
 import android.content.Context;
 import androidx.test.platform.app.InstrumentationRegistry;

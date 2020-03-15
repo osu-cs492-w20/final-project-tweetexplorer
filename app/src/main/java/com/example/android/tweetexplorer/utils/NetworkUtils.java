@@ -1,4 +1,4 @@
-package com.example.android.lifecycleweather.utils;
+package com.example.android.tweetexplorer.utils;
 
 import java.io.IOException;
 

@@ -5,7 +5,7 @@
     android:id="@+id/settings_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:name="com.example.android.lifecycleweather.SettingsFragment"
-    tools:context="com.example.android.lifecycleweather.SettingsActivity">
+    android:name="com.example.android.tweetexplorer.SettingsFragment"
+    tools:context="com.example.android.tweetexplorer.SettingsActivity">
 
 </fragment>

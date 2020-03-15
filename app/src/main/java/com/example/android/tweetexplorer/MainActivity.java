@@ -1,9 +1,9 @@
-package com.example.android.lifecycleweather;
+package com.example.android.tweetexplorer;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.AsyncTask;
+
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -16,22 +16,23 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.example.android.lifecycleweather.data.ForecastItem;
-import com.example.android.lifecycleweather.data.Status;
-import com.example.android.lifecycleweather.data.WeatherPreferences;
-import com.example.android.lifecycleweather.utils.NetworkUtils;
-import com.example.android.lifecycleweather.utils.OpenWeatherMapUtils;
+import com.example.android.tweetexplorer.data.ForecastItem;
+import com.example.android.tweetexplorer.data.Status;
+import com.example.android.tweetexplorer.data.WeatherPreferences;
+import com.example.android.tweetexplorer.utils.OpenWeatherMapUtils;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements ForecastAdapter.OnForecastItemClickListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+
+    private EditText mSearchBoxET;
 
     private TextView mForecastLocationTV;
     private RecyclerView mForecastItemsRV;
@@ -46,6 +47,10 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.O
 //        SharedPreferences.getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mSearchBoxET = findViewById(R.id.et_search_box);
+        Button searchButton = (Button)findViewById(R.id.btn_search);
+
 
         // Remove shadow under action bar.
         getSupportActionBar().setElevation(0);

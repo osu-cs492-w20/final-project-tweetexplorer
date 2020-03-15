@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.example.android.lifecycleweather.MainActivity">
+    tools:context="com.example.android.tweetexplorer.MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,6 +15,20 @@
         android:gravity="center_horizontal"
         android:orientation="vertical"
         android:padding="12dp">
+
+        <EditText
+            android:id="@+id/et_search_box"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:hint="Search Tweets..."/>
+
+        <Button
+            android:id="@+id/btn_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Search"
+            android:textSize="22sp"/>
 
         <TextView
             android:layout_width="wrap_content"
