@@ -3,19 +3,19 @@ package com.example.android.tweetexplorer.data;
 import android.os.AsyncTask;
 
 import com.example.android.tweetexplorer.utils.NetworkUtils;
-import com.example.android.tweetexplorer.utils.OpenWeatherMapUtils;
+import com.example.android.tweetexplorer.utils.TwitterUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class OpenWeatherMapAsyncTask extends AsyncTask<String, Void, String> {
+public class TwitterAsyncTask extends AsyncTask<String, Void, String> {
     private Callback mCallback;
 
     public interface Callback{
-        void onSearchFinished(ArrayList<ForecastItem> searchResults);
+        void onSearchFinished(ArrayList<TweetItem> searchResults);
     }
 
-    public OpenWeatherMapAsyncTask(Callback callback){
+    public TwitterAsyncTask(Callback callback){
         mCallback = callback;
     }
 
@@ -38,9 +38,9 @@ public class OpenWeatherMapAsyncTask extends AsyncTask<String, Void, String> {
 
     @Override
     protected void onPostExecute(String s){
-        ArrayList<ForecastItem> forecastJSON = null;
+        ArrayList<TweetItem> forecastJSON = null;
         if(s != null){
-            forecastJSON = OpenWeatherMapUtils.parseForecastJSON(s);
+            forecastJSON = TwitterUtils.parseForecastJSON(s);
         }
         mCallback.onSearchFinished(forecastJSON);
     }

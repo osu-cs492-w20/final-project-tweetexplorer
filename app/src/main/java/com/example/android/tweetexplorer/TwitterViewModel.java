@@ -3,19 +3,19 @@ package com.example.android.tweetexplorer;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.android.tweetexplorer.data.ForecastItem;
-import com.example.android.tweetexplorer.data.OpenWeatherMapRepository;
+import com.example.android.tweetexplorer.data.TweetItem;
+import com.example.android.tweetexplorer.data.TwitterRepository;
 import com.example.android.tweetexplorer.data.Status;
 
 import java.util.ArrayList;
 
-public class OpenWeatherMapViewModel extends ViewModel {
-    private OpenWeatherMapRepository mRepository;
-    private LiveData<ArrayList<ForecastItem>> mSearchResults;
+public class TwitterViewModel extends ViewModel {
+    private TwitterRepository mRepository;
+    private LiveData<ArrayList<TweetItem>> mSearchResults;
     private LiveData<Status> mLoadingStatus;
 
-    public OpenWeatherMapViewModel(){
-        mRepository = new OpenWeatherMapRepository();
+    public TwitterViewModel(){
+        mRepository = new TwitterRepository();
         mSearchResults = mRepository.getSearchResults();
         mLoadingStatus = mRepository.getLoadingStatus();
     }
@@ -24,7 +24,7 @@ public class OpenWeatherMapViewModel extends ViewModel {
         mRepository.loadSearchResults(location, units);
     }
 
-    public LiveData<ArrayList<ForecastItem>> getSearchResults() {
+    public LiveData<ArrayList<TweetItem>> getSearchResults() {
         return mSearchResults;
     }
 

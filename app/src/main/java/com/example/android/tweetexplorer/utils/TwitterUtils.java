@@ -2,7 +2,7 @@ package com.example.android.tweetexplorer.utils;
 
 import android.net.Uri;
 
-import com.example.android.tweetexplorer.data.ForecastItem;
+import com.example.android.tweetexplorer.data.TweetItem;
 import com.google.gson.Gson;
 
 import java.text.ParseException;
@@ -10,7 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.TimeZone;
 
-public class OpenWeatherMapUtils {
+public class TwitterUtils {
 
     public static final String EXTRA_FORECAST_ITEM = "com.example.android.lifecycleweather.utils.ForecastItem";
 
@@ -71,11 +71,11 @@ public class OpenWeatherMapUtils {
         return String.format(OWM_ICON_URL_FORMAT_STR, icon);
     }
 
-    public static ArrayList<ForecastItem> parseForecastJSON(String forecastJSON) {
+    public static ArrayList<TweetItem> parseForecastJSON(String forecastJSON) {
         Gson gson = new Gson();
         OWMForecastResults results = gson.fromJson(forecastJSON, OWMForecastResults.class);
         if (results != null && results.list != null) {
-            ArrayList<ForecastItem> forecastItems = new ArrayList<>();
+            ArrayList<TweetItem> tweetItems = new ArrayList<>();
             SimpleDateFormat dateParser = new SimpleDateFormat(OWM_FORECAST_DATE_FORMAT);
             dateParser.setTimeZone(TimeZone.getTimeZone(OWM_FORECAST_TIME_ZONE));
 
@@ -84,30 +84,30 @@ public class OpenWeatherMapUtils {
              * single-level ForecastItem object.
              */
             for (OWMForecastListItem listItem : results.list) {
-                ForecastItem forecastItem = new ForecastItem();
+                TweetItem tweetItem = new TweetItem();
 
                 try {
-                    forecastItem.dateTime = dateParser.parse(listItem.dt_txt);
+                    tweetItem.dateTime = dateParser.parse(listItem.dt_txt);
                 } catch (ParseException e) {
                     e.printStackTrace();
-                    forecastItem.dateTime = null;
+                    tweetItem.dateTime = null;
                 }
 
-                forecastItem.description = listItem.weather[0].description;
-                forecastItem.icon = listItem.weather[0].icon;
+                tweetItem.description = listItem.weather[0].description;
+                tweetItem.icon = listItem.weather[0].icon;
 
-                forecastItem.temperature = Math.round(listItem.main.temp);
-                forecastItem.temperatureHigh = Math.round(listItem.main.temp_max);
-                forecastItem.temperatureLow = Math.round(listItem.main.temp_min);
-                forecastItem.humidity = Math.round(listItem.main.humidity);
+                tweetItem.temperature = Math.round(listItem.main.temp);
+                tweetItem.temperatureHigh = Math.round(listItem.main.temp_max);
+                tweetItem.temperatureLow = Math.round(listItem.main.temp_min);
+                tweetItem.humidity = Math.round(listItem.main.humidity);
 
-                forecastItem.windSpeed = Math.round(listItem.wind.speed);
-                forecastItem.windDirection = windAngleToDirection(listItem.wind.deg);
+                tweetItem.windSpeed = Math.round(listItem.wind.speed);
+                tweetItem.windDirection = windAngleToDirection(listItem.wind.deg);
 
-                forecastItems.add(forecastItem);
+                tweetItems.add(tweetItem);
             }
 
-            return forecastItems;
+            return tweetItems;
         } else {
             return null;
         }

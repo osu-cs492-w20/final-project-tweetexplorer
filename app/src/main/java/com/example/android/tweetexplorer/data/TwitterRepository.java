@@ -6,18 +6,18 @@ import android.text.TextUtils;
 import android.util.Log;
 
 
-import com.example.android.tweetexplorer.utils.OpenWeatherMapUtils;
+import com.example.android.tweetexplorer.utils.TwitterUtils;
 
 import java.util.ArrayList;
 
-public class OpenWeatherMapRepository implements OpenWeatherMapAsyncTask.Callback{
-    private static final String TAG = OpenWeatherMapRepository.class.getSimpleName();
-    private MutableLiveData<ArrayList<ForecastItem>> mSearchResults;
+public class TwitterRepository implements TwitterAsyncTask.Callback{
+    private static final String TAG = TwitterRepository.class.getSimpleName();
+    private MutableLiveData<ArrayList<TweetItem>> mSearchResults;
     private MutableLiveData<Status> mLoadingStatus;
     private String mCurrentLocation;
     private String mCurrentUnits;
 
-    public OpenWeatherMapRepository() {
+    public TwitterRepository() {
         mSearchResults = new MutableLiveData<>();
         mSearchResults.setValue(null);
 
@@ -28,7 +28,7 @@ public class OpenWeatherMapRepository implements OpenWeatherMapAsyncTask.Callbac
         mCurrentUnits = null;
     }
 
-    public LiveData<ArrayList<ForecastItem>> getSearchResults() {
+    public LiveData<ArrayList<TweetItem>> getSearchResults() {
         return mSearchResults;
     }
 
@@ -37,7 +37,7 @@ public class OpenWeatherMapRepository implements OpenWeatherMapAsyncTask.Callbac
     }
 
     @Override
-    public void onSearchFinished(ArrayList<ForecastItem> searchResults){
+    public void onSearchFinished(ArrayList<TweetItem> searchResults){
         mSearchResults.setValue(searchResults);
         if(searchResults != null){
             mLoadingStatus.setValue(Status.SUCCESS);
@@ -54,11 +54,11 @@ public class OpenWeatherMapRepository implements OpenWeatherMapAsyncTask.Callbac
         if(shouldExecuteSearch(location, units)){
             mCurrentLocation = location;
             mCurrentUnits = units;
-            String url = OpenWeatherMapUtils.buildForecastURL(location, units);
+            String url = TwitterUtils.buildForecastURL(location, units);
             mSearchResults.setValue(null);
             Log.d(TAG, "executing search with url: " + url);
             mLoadingStatus.setValue(Status.LOADING);
-            new OpenWeatherMapAsyncTask(this).execute(url);
+            new TwitterAsyncTask(this).execute(url);
         } else {
             Log.d(TAG, "using cached search results");
         }

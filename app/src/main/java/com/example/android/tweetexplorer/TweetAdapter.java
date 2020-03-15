@@ -8,35 +8,35 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.example.android.tweetexplorer.data.ForecastItem;
-import com.example.android.tweetexplorer.data.WeatherPreferences;
-import com.example.android.tweetexplorer.utils.OpenWeatherMapUtils;
+import com.example.android.tweetexplorer.data.TweetItem;
+import com.example.android.tweetexplorer.data.TweetPreferences;
+import com.example.android.tweetexplorer.utils.TwitterUtils;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
 
-public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastItemViewHolder> {
+public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ForecastItemViewHolder> {
 
-    private ArrayList<ForecastItem> mForecastItems;
+    private ArrayList<TweetItem> mTweetItems;
     private OnForecastItemClickListener mForecastItemClickListener;
 
     public interface OnForecastItemClickListener {
-        void onForecastItemClick(ForecastItem forecastItem);
+        void onForecastItemClick(TweetItem tweetItem);
     }
 
-    public ForecastAdapter(OnForecastItemClickListener clickListener) {
+    public TweetAdapter(OnForecastItemClickListener clickListener) {
         mForecastItemClickListener = clickListener;
     }
 
-    public void updateForecastItems(ArrayList<ForecastItem> forecastItems) {
-        mForecastItems = forecastItems;
+    public void updateForecastItems(ArrayList<TweetItem> tweetItems) {
+        mTweetItems = tweetItems;
         notifyDataSetChanged();
     }
 
     @Override
     public int getItemCount() {
-        if (mForecastItems != null) {
-            return mForecastItems.size();
+        if (mTweetItems != null) {
+            return mTweetItems.size();
         } else {
             return 0;
         }
@@ -51,7 +51,7 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
 
     @Override
     public void onBindViewHolder(ForecastItemViewHolder holder, int position) {
-        holder.bind(mForecastItems.get(position));
+        holder.bind(mTweetItems.get(position));
     }
 
     class ForecastItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -67,13 +67,13 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
             itemView.setOnClickListener(this);
         }
 
-        public void bind(ForecastItem forecastItem) {
-            String dateString = DateFormat.getDateTimeInstance().format(forecastItem.dateTime);
+        public void bind(TweetItem tweetItem) {
+            String dateString = DateFormat.getDateTimeInstance().format(tweetItem.dateTime);
             String detailString = mForecastTempDescriptionTV.getContext().getString(
-                    R.string.forecast_item_details, forecastItem.temperature,
-                    WeatherPreferences.getDefaultTemperatureUnitsAbbr(), forecastItem.description
+                    R.string.forecast_item_details, tweetItem.temperature,
+                    TweetPreferences.getDefaultTemperatureUnitsAbbr(), tweetItem.description
             );
-            String iconURL = OpenWeatherMapUtils.buildIconURL(forecastItem.icon);
+            String iconURL = TwitterUtils.buildIconURL(tweetItem.icon);
             mForecastDateTV.setText(dateString);
             mForecastTempDescriptionTV.setText(detailString);
             Glide.with(mWeatherIconIV.getContext()).load(iconURL).into(mWeatherIconIV);
@@ -81,8 +81,8 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
 
         @Override
         public void onClick(View v) {
-            ForecastItem forecastItem = mForecastItems.get(getAdapterPosition());
-            mForecastItemClickListener.onForecastItemClick(forecastItem);
+            TweetItem tweetItem = mTweetItems.get(getAdapterPosition());
+            mForecastItemClickListener.onForecastItemClick(tweetItem);
         }
     }
 }

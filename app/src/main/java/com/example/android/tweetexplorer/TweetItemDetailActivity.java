@@ -13,13 +13,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.example.android.tweetexplorer.data.ForecastItem;
-import com.example.android.tweetexplorer.data.WeatherPreferences;
-import com.example.android.tweetexplorer.utils.OpenWeatherMapUtils;
+import com.example.android.tweetexplorer.data.TweetItem;
+import com.example.android.tweetexplorer.data.TweetPreferences;
+import com.example.android.tweetexplorer.utils.TwitterUtils;
 
 import java.text.DateFormat;
 
-public class ForecastItemDetailActivity extends AppCompatActivity {
+public class TweetItemDetailActivity extends AppCompatActivity {
 
     private TextView mDateTV;
     private TextView mTempDescriptionTV;
@@ -28,7 +28,7 @@ public class ForecastItemDetailActivity extends AppCompatActivity {
     private TextView mHumidityTV;
     private ImageView mWeatherIconIV;
 
-    private ForecastItem mForecastItem;
+    private TweetItem mTweetItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,11 +43,11 @@ public class ForecastItemDetailActivity extends AppCompatActivity {
         mWeatherIconIV = findViewById(R.id.iv_weather_icon);
 
         Intent intent = getIntent();
-        if (intent != null && intent.hasExtra(OpenWeatherMapUtils.EXTRA_FORECAST_ITEM)) {
-            mForecastItem = (ForecastItem)intent.getSerializableExtra(
-                    OpenWeatherMapUtils.EXTRA_FORECAST_ITEM
+        if (intent != null && intent.hasExtra(TwitterUtils.EXTRA_FORECAST_ITEM)) {
+            mTweetItem = (TweetItem)intent.getSerializableExtra(
+                    TwitterUtils.EXTRA_FORECAST_ITEM
             );
-            fillInLayout(mForecastItem);
+            fillInLayout(mTweetItem);
         }
     }
 
@@ -71,13 +71,13 @@ public class ForecastItemDetailActivity extends AppCompatActivity {
     public void shareForecast() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String location = preferences.getString(getString(R.string.pref_location_key), getString(R.string.pref_location_default));
-        if (mForecastItem != null) {
+        if (mTweetItem != null) {
             String dateString = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
-                    .format(mForecastItem.dateTime);
+                    .format(mTweetItem.dateTime);
             String shareText = getString(R.string.forecast_item_share_text,
                     location, dateString,
-                    mForecastItem.temperature, WeatherPreferences.getDefaultTemperatureUnitsAbbr(),
-                    mForecastItem.description);
+                    mTweetItem.temperature, TweetPreferences.getDefaultTemperatureUnitsAbbr(),
+                    mTweetItem.description);
 
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
             shareIntent.putExtra(Intent.EXTRA_TEXT, shareText);
@@ -88,18 +88,18 @@ public class ForecastItemDetailActivity extends AppCompatActivity {
         }
     }
 
-    private void fillInLayout(ForecastItem forecastItem) {
-        String dateString = DateFormat.getDateTimeInstance().format(forecastItem.dateTime);
-        String detailString = getString(R.string.forecast_item_details, forecastItem.temperature,
-                WeatherPreferences.getDefaultTemperatureUnitsAbbr(), forecastItem.description);
+    private void fillInLayout(TweetItem tweetItem) {
+        String dateString = DateFormat.getDateTimeInstance().format(tweetItem.dateTime);
+        String detailString = getString(R.string.forecast_item_details, tweetItem.temperature,
+                TweetPreferences.getDefaultTemperatureUnitsAbbr(), tweetItem.description);
         String lowHighTempString = getString(R.string.forecast_item_low_high_temp,
-                forecastItem.temperatureLow, forecastItem.temperatureHigh,
-                WeatherPreferences.getDefaultTemperatureUnitsAbbr());
+                tweetItem.temperatureLow, tweetItem.temperatureHigh,
+                TweetPreferences.getDefaultTemperatureUnitsAbbr());
 
-        String windString = getString(R.string.forecast_item_wind, forecastItem.windSpeed,
-                forecastItem.windDirection);
-        String humidityString = getString(R.string.forecast_item_humidity, forecastItem.humidity);
-        String iconURL = OpenWeatherMapUtils.buildIconURL(forecastItem.icon);
+        String windString = getString(R.string.forecast_item_wind, tweetItem.windSpeed,
+                tweetItem.windDirection);
+        String humidityString = getString(R.string.forecast_item_humidity, tweetItem.humidity);
+        String iconURL = TwitterUtils.buildIconURL(tweetItem.icon);
 
         mDateTV.setText(dateString);
         mTempDescriptionTV.setText(detailString);
