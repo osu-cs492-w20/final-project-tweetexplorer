@@ -23,7 +23,7 @@
         </activity>
 
         <activity
-            android:name="com.example.android.tweetexplorer.ForecastItemDetailActivity"
+            android:name="com.example.android.tweetexplorer.TweetItemDetailActivity"
             android:parentActivityName="com.example.android.tweetexplorer.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

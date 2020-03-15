@@ -21,14 +21,14 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.example.android.tweetexplorer.data.ForecastItem;
+import com.example.android.tweetexplorer.data.TweetItem;
 import com.example.android.tweetexplorer.data.Status;
-import com.example.android.tweetexplorer.data.WeatherPreferences;
-import com.example.android.tweetexplorer.utils.OpenWeatherMapUtils;
+import com.example.android.tweetexplorer.data.TweetPreferences;
+import com.example.android.tweetexplorer.utils.TwitterUtils;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements ForecastAdapter.OnForecastItemClickListener {
+public class MainActivity extends AppCompatActivity implements TweetAdapter.OnForecastItemClickListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -38,9 +38,9 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.O
     private RecyclerView mForecastItemsRV;
     private ProgressBar mLoadingIndicatorPB;
     private TextView mLoadingErrorMessageTV;
-    private ForecastAdapter mForecastAdapter;
+    private TweetAdapter mTweetAdapter;
 
-    private OpenWeatherMapViewModel mViewModel;
+    private TwitterViewModel mViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,27 +53,27 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.O
 
 
         // Remove shadow under action bar.
-        getSupportActionBar().setElevation(0);
+//        getSupportActionBar().setElevation(0);
 
-        mForecastLocationTV = findViewById(R.id.tv_forecast_location);
+//        mForecastLocationTV = findViewById(R.id.tv_forecast_location);
 //        mForecastLocationTV.setText(WeatherPreferences.getDefaultForecastLocation());
 
         mLoadingIndicatorPB = findViewById(R.id.pb_loading_indicator);
         mLoadingErrorMessageTV = findViewById(R.id.tv_loading_error_message);
         mForecastItemsRV = findViewById(R.id.rv_forecast_items);
 
-        mForecastAdapter = new ForecastAdapter(this);
-        mForecastItemsRV.setAdapter(mForecastAdapter);
+        mTweetAdapter = new TweetAdapter(this);
+        mForecastItemsRV.setAdapter(mTweetAdapter);
         mForecastItemsRV.setLayoutManager(new LinearLayoutManager(this));
         mForecastItemsRV.setHasFixedSize(true);
 
-        mViewModel = new ViewModelProvider(this).get(OpenWeatherMapViewModel.class);
+        mViewModel = new ViewModelProvider(this).get(TwitterViewModel.class);
 
-        mViewModel.getSearchResults().observe(this, new Observer<ArrayList<ForecastItem>>() {
+        mViewModel.getSearchResults().observe(this, new Observer<ArrayList<TweetItem>>() {
             @Override
-            public void onChanged(ArrayList<ForecastItem> forecastItems) {
+            public void onChanged(ArrayList<TweetItem> tweetItems) {
 //                  mForecastAdapter.updateForecastItems(new ArrayList<ForecastItem>(forecastItems));
-                mForecastAdapter.updateForecastItems(forecastItems);
+                mTweetAdapter.updateForecastItems(tweetItems);
             }
         });
 
@@ -87,7 +87,6 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.O
                     mForecastItemsRV.setVisibility(View.VISIBLE);
                     mLoadingErrorMessageTV.setVisibility(View.INVISIBLE);
                 } else {
-//                    Log.d(TAG, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHHHHHHHHHHHHHHHHHHHHHHHH");
                     mLoadingIndicatorPB.setVisibility(View.INVISIBLE);
                     mForecastItemsRV.setVisibility(View.INVISIBLE);
                     mLoadingErrorMessageTV.setVisibility(View.VISIBLE);
@@ -95,13 +94,13 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.O
             }
         });
 
-        loadForecast();
+//        loadForecast();
     }
 
     @Override
-    public void onForecastItemClick(ForecastItem forecastItem) {
-        Intent intent = new Intent(this, ForecastItemDetailActivity.class);
-        intent.putExtra(OpenWeatherMapUtils.EXTRA_FORECAST_ITEM, forecastItem);
+    public void onForecastItemClick(TweetItem tweetItem) {
+        Intent intent = new Intent(this, TweetItemDetailActivity.class);
+        intent.putExtra(TwitterUtils.EXTRA_FORECAST_ITEM, tweetItem);
         startActivity(intent);
     }
 
@@ -141,14 +140,13 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.O
                 getString(R.string.pref_temp_default));
         String location = preferences.getString(getString(R.string.pref_location_key), getString(R.string.pref_location_default));
         if(units.equals("imperial")){
-            WeatherPreferences.setDefaultTemperatureUnits("F");
+            TweetPreferences.setDefaultTemperatureUnits("F");
         } else if (units.equals("metric")){
-            WeatherPreferences.setDefaultTemperatureUnits("C");
+            TweetPreferences.setDefaultTemperatureUnits("C");
         } else if (units.equals("kelvin")){
-            WeatherPreferences.setDefaultTemperatureUnits("K");
+            TweetPreferences.setDefaultTemperatureUnits("K");
         }
-//        Log.d(TAG, "Location is currently: " + location + " and the units are: " + units);
-        mForecastLocationTV.setText(location);
+//        mForecastLocationTV.setText(location);
         mViewModel.loadSearchResults(location, units);
 //        new OpenWeatherMapForecastTask().execute(openWeatherMapForecastURL);
     }
@@ -175,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.O
     protected void onResume(){
         super.onResume();
         Log.d(TAG, "onResume()");
-        loadForecast();
+//        loadForecast();
     }
 
     @Override
@@ -194,41 +192,5 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.O
     protected void onDestroy() {
         super.onDestroy();
         Log.d(TAG, "onDestroy()");
-//        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-//        SharedPreferences preferences = getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
     }
-
-//    class OpenWeatherMapForecastTask extends AsyncTask<String, Void, String> {
-//        @Override
-//        protected void onPreExecute() {
-//            super.onPreExecute();
-//            mLoadingIndicatorPB.setVisibility(View.VISIBLE);
-//        }
-//
-//        @Override
-//        protected String doInBackground(String... params) {
-//            String openWeatherMapURL = params[0];
-//            String forecastJSON = null;
-//            try {
-//                forecastJSON = NetworkUtils.doHTTPGet(openWeatherMapURL);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            return forecastJSON;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(String forecastJSON) {
-//            mLoadingIndicatorPB.setVisibility(View.INVISIBLE);
-//            if (forecastJSON != null) {
-//                mLoadingErrorMessageTV.setVisibility(View.INVISIBLE);
-//                mForecastItemsRV.setVisibility(View.VISIBLE);
-//                ArrayList<ForecastItem> forecastItems = OpenWeatherMapUtils.parseForecastJSON(forecastJSON);
-//                mForecastAdapter.updateForecastItems(forecastItems);
-//            } else {
-//                mForecastItemsRV.setVisibility(View.INVISIBLE);
-//                mLoadingErrorMessageTV.setVisibility(View.VISIBLE);
-//            }
-//        }
-//    }
 }

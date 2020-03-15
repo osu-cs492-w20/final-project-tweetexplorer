@@ -7,21 +7,21 @@
     android:orientation="vertical"
     tools:context="com.example.android.tweetexplorer.MainActivity">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:background="@color/colorPrimary"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        android:padding="12dp">
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginBottom="8dp"-->
+<!--        android:background="@color/colorPrimary"-->
+<!--        android:gravity="center_horizontal"-->
+<!--        android:orientation="vertical"-->
+<!--        android:padding="12dp">-->
 
         <EditText
             android:id="@+id/et_search_box"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="24sp"
-            android:hint="Search Tweets..."/>
+            android:hint="Search twitter handle..."/>
 
         <Button
             android:id="@+id/btn_search"
@@ -30,22 +30,7 @@
             android:text="Search"
             android:textSize="22sp"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/forecast_for"
-            android:textColor="#fff"
-            android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/tv_forecast_location"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:textColor="#fff"
-            android:textSize="42sp" />
-
-    </LinearLayout>
+<!--    </LinearLayout>-->
 
     <FrameLayout
         android:layout_width="match_parent"

@@ -1,6 +1,6 @@
 package com.example.android.tweetexplorer.data;
 
-public class WeatherPreferences {
+public class TweetPreferences {
     private static final String DEFAULT_FORECAST_LOCATION = "Corvallis,OR,US";
     private static final String DEFAULT_TEMPERATURE_UNITS = "imperial";
     private static String DEFAULT_TEMPERATURE_UNITS_ABBR = "F";
