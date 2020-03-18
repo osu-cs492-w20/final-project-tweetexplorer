@@ -12,7 +12,7 @@ public class TwitterAsyncTask extends AsyncTask<String, Void, String> {
     private Callback mCallback;
 
     public interface Callback{
-        void onSearchFinished(ArrayList<TweetItem> searchResults);
+        void onSearchFinished(ArrayList<Tweet> searchResults);
     }
 
     public TwitterAsyncTask(Callback callback){
@@ -26,22 +26,22 @@ public class TwitterAsyncTask extends AsyncTask<String, Void, String> {
 
     @Override
     protected String doInBackground(String... params) {
-        String openWeatherMapURL = params[0];
-        String forecastJSON = null;
+        String twitterURL = params[0];
+        String timelineJSON = null;
         try {
-            forecastJSON = NetworkUtils.doHTTPGet(openWeatherMapURL);
+            timelineJSON = NetworkUtils.doHTTPGet(twitterURL);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return forecastJSON;
+        return timelineJSON;
     }
 
     @Override
     protected void onPostExecute(String s){
-        ArrayList<TweetItem> forecastJSON = null;
+        ArrayList<Tweet> timelineJSON = null;
         if(s != null){
-            forecastJSON = TwitterUtils.parseForecastJSON(s);
+            timelineJSON = TwitterUtils.parseTimelineJSON(s);
         }
-        mCallback.onSearchFinished(forecastJSON);
+        mCallback.onSearchFinished(timelineJSON);
     }
 }

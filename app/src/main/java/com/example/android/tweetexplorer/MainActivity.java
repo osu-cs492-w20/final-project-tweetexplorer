@@ -21,7 +21,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.example.android.tweetexplorer.data.TweetItem;
+import com.example.android.tweetexplorer.data.Tweet;
 import com.example.android.tweetexplorer.data.Status;
 import com.example.android.tweetexplorer.data.TweetPreferences;
 import com.example.android.tweetexplorer.utils.TwitterUtils;
@@ -98,9 +98,9 @@ public class MainActivity extends AppCompatActivity implements TweetAdapter.OnFo
     }
 
     @Override
-    public void onForecastItemClick(TweetItem tweetItem) {
+    public void onForecastItemClick(Tweet tweet) {
         Intent intent = new Intent(this, TweetItemDetailActivity.class);
-        intent.putExtra(TwitterUtils.EXTRA_FORECAST_ITEM, tweetItem);
+        intent.putExtra(TwitterUtils.EXTRA_TWEET_ITEM, tweet);
         startActivity(intent);
     }
 

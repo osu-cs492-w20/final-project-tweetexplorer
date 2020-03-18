@@ -1,153 +1,63 @@
 package com.example.android.tweetexplorer.utils;
 
 import android.net.Uri;
+import android.util.Log;
 
-import com.example.android.tweetexplorer.data.TweetItem;
+import com.example.android.tweetexplorer.data.Tweet;
 import com.google.gson.Gson;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.TimeZone;
 
 public class TwitterUtils {
+    private static final String TAG = TwitterUtils.class.getSimpleName();
+    public static final String EXTRA_TWEET_ITEM = "com.example.android.tweetexplorer.utils.Tweet";
 
-    public static final String EXTRA_FORECAST_ITEM = "com.example.android.lifecycleweather.utils.ForecastItem";
+    // private final static String TW_TIMELINE_BASE_URL = "https://api.twitter.com/1.1/statuses/user_timeline.json";
+    private final static String TW_TIMELINE_BASE_URL = "http://people.oregonstate.edu/~golletzj/timeline.json";
+    private final static String TW_HANDLE_QUERY_PARAM = "screen_name";
+    private final static String TW_COUNT_QUERY_PARAM = "count";
+    private final static String TW_COUNT_QUERY_VALUE = "2";
+    private final static String TW_RETWEETS_QUERY_PARAM = "include_rts";
+    private final static String TW_RETWEETS_QUERY_VALUE = "false";
+    private final static String TW_ENTITIES_QUERY_PARAM = "include_entities";
+    private final static String TW_ENTITIES_QUERY_VALUE = "false";
+    private final static String TW_NOREPLIES_QUERY_PARAM = "exclude_replies";
+    private final static String TW_NOREPLIES_QUERY_VALUE = "true";
 
-    private final static String OWM_FORECAST_BASE_URL = "https://api.openweathermap.org/data/2.5/forecast";
-    private final static String OWM_ICON_URL_FORMAT_STR = "https://openweathermap.org/img/w/%s.png";
-    private final static String OWM_FORECAST_QUERY_PARAM = "q";
-    private final static String OWM_FORECAST_UNITS_PARAM = "units";
-    private final static String OWM_FORECAST_APPID_PARAM = "appid";
-    private final static String OWM_FORECAST_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
     private final static String OWM_FORECAST_TIME_ZONE = "UTC";
 
-    /*
-     * Set your own APPID here.
-     */
-    private final static String OWM_FORECAST_APPID = "7180cdd1ea368194ab22c6f22513bc80";
+    // private final static String TW_AUTH_HEADER_KEY = "authorization: OAuth oauth_consumer_key=";
+    // private final static String TW_API_KEY = "";
 
-    /*
-     * The below several classes are used only for JSON parsing with Gson.
-     */
-    static class OWMForecastResults {
-        public OWMForecastListItem[] list;
-    }
-
-    static class OWMForecastListItem {
-        public String dt_txt;
-        public OWMForecastItemMain main;
-        public OWMForecastItemWeather[] weather;
-        public OWMForecastItemWind wind;
-    }
-
-    static class OWMForecastItemMain {
-        public float temp;
-        public float temp_min;
-        public float temp_max;
-        public float humidity;
-    }
-
-    static class OWMForecastItemWeather {
-        public String description;
-        public String icon;
-    }
-
-    static class OWMForecastItemWind {
-        public float speed;
-        public float deg;
-    }
-
-    public static String buildForecastURL(String forecastLocation, String temperatureUnits) {
-        return Uri.parse(OWM_FORECAST_BASE_URL).buildUpon()
-                .appendQueryParameter(OWM_FORECAST_QUERY_PARAM, forecastLocation)
-                .appendQueryParameter(OWM_FORECAST_UNITS_PARAM, temperatureUnits)
-                .appendQueryParameter(OWM_FORECAST_APPID_PARAM, OWM_FORECAST_APPID)
+    public static String buildTimelineURL(String screenName) {
+        return Uri.parse(TW_TIMELINE_BASE_URL).buildUpon()
+                .appendQueryParameter(TW_HANDLE_QUERY_PARAM, screenName)
+                .appendQueryParameter(TW_COUNT_QUERY_PARAM, TW_COUNT_QUERY_VALUE)
+                .appendQueryParameter(TW_RETWEETS_QUERY_PARAM, TW_RETWEETS_QUERY_VALUE)
+                .appendQueryParameter(TW_ENTITIES_QUERY_PARAM, TW_ENTITIES_QUERY_VALUE)
+                .appendQueryParameter(TW_NOREPLIES_QUERY_PARAM, TW_NOREPLIES_QUERY_VALUE)
                 .build()
                 .toString();
     }
 
-    public static String buildIconURL(String icon) {
-        return String.format(OWM_ICON_URL_FORMAT_STR, icon);
-    }
-
-    public static ArrayList<TweetItem> parseForecastJSON(String forecastJSON) {
+    public static ArrayList<Tweet> parseTimelineJSON(String forecastJSON) {
         Gson gson = new Gson();
-        OWMForecastResults results = gson.fromJson(forecastJSON, OWMForecastResults.class);
-        if (results != null && results.list != null) {
-            ArrayList<TweetItem> tweetItems = new ArrayList<>();
-            SimpleDateFormat dateParser = new SimpleDateFormat(OWM_FORECAST_DATE_FORMAT);
-            dateParser.setTimeZone(TimeZone.getTimeZone(OWM_FORECAST_TIME_ZONE));
-
-            /*
-             * Loop through all results parsed from JSON and condense each one into one
-             * single-level ForecastItem object.
-             */
-            for (OWMForecastListItem listItem : results.list) {
-                TweetItem tweetItem = new TweetItem();
-
-                try {
-                    tweetItem.dateTime = dateParser.parse(listItem.dt_txt);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                    tweetItem.dateTime = null;
-                }
-
-                tweetItem.description = listItem.weather[0].description;
-                tweetItem.icon = listItem.weather[0].icon;
-
-                tweetItem.temperature = Math.round(listItem.main.temp);
-                tweetItem.temperatureHigh = Math.round(listItem.main.temp_max);
-                tweetItem.temperatureLow = Math.round(listItem.main.temp_min);
-                tweetItem.humidity = Math.round(listItem.main.humidity);
-
-                tweetItem.windSpeed = Math.round(listItem.wind.speed);
-                tweetItem.windDirection = windAngleToDirection(listItem.wind.deg);
-
-                tweetItems.add(tweetItem);
+        Tweet[] tweetsList = gson.fromJson(forecastJSON, Tweet[].class);
+        Log.d(TAG, Arrays.toString(tweetsList));
+        assert(false);
+        if (tweetsList != null && tweetsList.length != 0) {
+            ArrayList<Tweet> tweets = new ArrayList<>();
+            for (Tweet tweet : tweetsList) {
+                tweets.add(tweet);
             }
 
-            return tweetItems;
+            return tweets;
         } else {
             return null;
-        }
-    }
-
-    public static String windAngleToDirection(double angleDegrees) {
-        if (angleDegrees >= 0 && angleDegrees < 11.25) {
-            return "N";
-        } else if (angleDegrees >= 11.25 && angleDegrees < 33.75) {
-            return "NNE";
-        } else if (angleDegrees >= 33.75 && angleDegrees < 56.25) {
-            return "NE";
-        } else if (angleDegrees >= 56.25 && angleDegrees < 78.75) {
-            return "ENE";
-        } else if (angleDegrees >= 78.75 && angleDegrees < 101.25) {
-            return "E";
-        } else if (angleDegrees >= 101.25 && angleDegrees < 123.75) {
-            return "ESE";
-        } else if (angleDegrees >= 123.75 && angleDegrees < 146.25) {
-            return "SE";
-        } else if (angleDegrees >= 146.25 && angleDegrees < 168.75) {
-            return "SSE";
-        } else if (angleDegrees >= 168.75 && angleDegrees < 191.25) {
-            return "S";
-        } else if (angleDegrees >= 191.25 && angleDegrees < 213.75) {
-            return "SSW";
-        } else if (angleDegrees >= 213.75 && angleDegrees < 236.25) {
-            return "SW";
-        } else if (angleDegrees >= 236.25 && angleDegrees < 258.75) {
-            return "WSW";
-        } else if (angleDegrees >= 258.75 && angleDegrees < 281.25) {
-            return "W";
-        } else if (angleDegrees >= 281.25 && angleDegrees < 303.75) {
-            return "WNW";
-        } else if (angleDegrees >= 303.75 && angleDegrees < 326.25) {
-            return "WNW";
-        } else if (angleDegrees >= 326.25 && angleDegrees < 348.75) {
-            return "NNW";
-        } else {
-            return "N";
         }
     }
 }

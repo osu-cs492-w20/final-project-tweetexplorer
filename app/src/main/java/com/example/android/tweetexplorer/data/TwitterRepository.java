@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class TwitterRepository implements TwitterAsyncTask.Callback{
     private static final String TAG = TwitterRepository.class.getSimpleName();
-    private MutableLiveData<ArrayList<TweetItem>> mSearchResults;
+    private MutableLiveData<ArrayList<Tweet>> mSearchResults;
     private MutableLiveData<Status> mLoadingStatus;
     private String mCurrentLocation;
     private String mCurrentUnits;
@@ -28,7 +28,7 @@ public class TwitterRepository implements TwitterAsyncTask.Callback{
         mCurrentUnits = null;
     }
 
-    public LiveData<ArrayList<TweetItem>> getSearchResults() {
+    public LiveData<ArrayList<Tweet>> getSearchResults() {
         return mSearchResults;
     }
 
@@ -37,7 +37,7 @@ public class TwitterRepository implements TwitterAsyncTask.Callback{
     }
 
     @Override
-    public void onSearchFinished(ArrayList<TweetItem> searchResults){
+    public void onSearchFinished(ArrayList<Tweet> searchResults){
         mSearchResults.setValue(searchResults);
         if(searchResults != null){
             mLoadingStatus.setValue(Status.SUCCESS);
@@ -54,7 +54,7 @@ public class TwitterRepository implements TwitterAsyncTask.Callback{
         if(shouldExecuteSearch(location, units)){
             mCurrentLocation = location;
             mCurrentUnits = units;
-            String url = TwitterUtils.buildForecastURL(location, units);
+            String url = TwitterUtils.buildTimelineURL("barackobama");
             mSearchResults.setValue(null);
             Log.d(TAG, "executing search with url: " + url);
             mLoadingStatus.setValue(Status.LOADING);

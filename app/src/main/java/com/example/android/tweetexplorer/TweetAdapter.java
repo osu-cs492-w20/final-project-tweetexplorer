@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.example.android.tweetexplorer.data.TweetItem;
+import com.example.android.tweetexplorer.data.Tweet;
 import com.example.android.tweetexplorer.data.TweetPreferences;
 import com.example.android.tweetexplorer.utils.TwitterUtils;
 
@@ -17,26 +17,26 @@ import java.util.ArrayList;
 
 public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ForecastItemViewHolder> {
 
-    private ArrayList<TweetItem> mTweetItems;
+    private ArrayList<Tweet> mTweets;
     private OnForecastItemClickListener mForecastItemClickListener;
 
     public interface OnForecastItemClickListener {
-        void onForecastItemClick(TweetItem tweetItem);
+        void onForecastItemClick(Tweet tweet);
     }
 
     public TweetAdapter(OnForecastItemClickListener clickListener) {
         mForecastItemClickListener = clickListener;
     }
 
-    public void updateForecastItems(ArrayList<TweetItem> tweetItems) {
-        mTweetItems = tweetItems;
+    public void updateForecastItems(ArrayList<Tweet> tweets) {
+        mTweets = tweets;
         notifyDataSetChanged();
     }
 
     @Override
     public int getItemCount() {
-        if (mTweetItems != null) {
-            return mTweetItems.size();
+        if (mTweets != null) {
+            return mTweets.size();
         } else {
             return 0;
         }
@@ -51,7 +51,7 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ForecastItem
 
     @Override
     public void onBindViewHolder(ForecastItemViewHolder holder, int position) {
-        holder.bind(mTweetItems.get(position));
+        holder.bind(mTweets.get(position));
     }
 
     class ForecastItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -67,22 +67,20 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ForecastItem
             itemView.setOnClickListener(this);
         }
 
-        public void bind(TweetItem tweetItem) {
-            String dateString = DateFormat.getDateTimeInstance().format(tweetItem.dateTime);
+        public void bind(Tweet tweet) {
+            String dateString = DateFormat.getDateTimeInstance().format(tweet.dateTime);
             String detailString = mForecastTempDescriptionTV.getContext().getString(
-                    R.string.forecast_item_details, tweetItem.temperature,
-                    TweetPreferences.getDefaultTemperatureUnitsAbbr(), tweetItem.description
+                    R.string.forecast_item_details, tweet.temperature,
+                    TweetPreferences.getDefaultTemperatureUnitsAbbr(), tweet.description
             );
-            String iconURL = TwitterUtils.buildIconURL(tweetItem.icon);
             mForecastDateTV.setText(dateString);
             mForecastTempDescriptionTV.setText(detailString);
-            Glide.with(mWeatherIconIV.getContext()).load(iconURL).into(mWeatherIconIV);
         }
 
         @Override
         public void onClick(View v) {
-            TweetItem tweetItem = mTweetItems.get(getAdapterPosition());
-            mForecastItemClickListener.onForecastItemClick(tweetItem);
+            Tweet tweet = mTweets.get(getAdapterPosition());
+            mForecastItemClickListener.onForecastItemClick(tweet);
         }
     }
 }
