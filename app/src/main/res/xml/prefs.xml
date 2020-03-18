@@ -3,17 +3,40 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <ListPreference
-        android:key="@string/pref_temp_key"
-        android:title="@string/pref_temp_title"
+        android:key="@string/pref_sort_key"
+        android:title="@string/pref_sort_title"
         android:summary="%s"
-        android:dialogTitle="@string/pref_temp_title"
-        android:entries="@array/pref_temp_entries"
-        android:entryValues="@array/pref_temp_values"
-        android:defaultValue="@string/pref_temp_default"/>
+        android:dialogTitle="@string/pref_sort_title"
+        android:entries="@array/pref_sort_entries"
+        android:entryValues="@array/pref_sort_values"
+        android:defaultValue="@string/pref_sort_default"/>
+
+    <ListPreference
+        android:key="@string/pref_language_key"
+        android:title="@string/pref_language_title"
+        android:summary="%s"
+        android:dialogTitle="@string/pref_language_title"
+        android:entries="@array/pref_language_entries"
+        android:entryValues="@array/pref_language_values"
+        android:defaultValue="" />
 
     <EditTextPreference
-        android:key="@string/pref_location_key"
-        android:title="@string/pref_location_title"
-        android:defaultValue="@string/pref_location_default"/>
+        android:key="@string/pref_user_key"
+        android:title="@string/pref_user_title" />
+
+    <PreferenceCategory>
+        <CheckBoxPreference
+            android:key="@string/pref_in_name_key"
+            android:title="@string/pref_in_name_title"
+            android:defaultValue="true" />
+        <CheckBoxPreference
+            android:key="@string/pref_in_description_key"
+            android:title="@string/pref_in_description_title"
+            android:defaultValue="true" />
+        <CheckBoxPreference
+            android:key="@string/pref_in_readme_key"
+            android:title="@string/pref_in_readme_title"
+            android:defaultValue="false" />
+    </PreferenceCategory>
 
 </PreferenceScreen>

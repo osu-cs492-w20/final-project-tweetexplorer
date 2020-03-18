@@ -1,18 +1,17 @@
 package com.example.android.tweetexplorer;
 
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.net.Uri;
-
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import android.os.Bundle;
-
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.util.Log;
+
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,87 +20,76 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.example.android.tweetexplorer.data.TweetItem;
+import com.example.android.tweetexplorer.data.GitHubRepo;
 import com.example.android.tweetexplorer.data.Status;
-import com.example.android.tweetexplorer.data.TweetPreferences;
-import com.example.android.tweetexplorer.utils.TwitterUtils;
 
-import java.util.ArrayList;
+import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements TweetAdapter.OnForecastItemClickListener {
-
+public class MainActivity extends AppCompatActivity implements GitHubSearchAdapter.OnSearchResultClickListener {
     private static final String TAG = MainActivity.class.getSimpleName();
 
+    private RecyclerView mSearchResultsRV;
     private EditText mSearchBoxET;
-
-    private TextView mForecastLocationTV;
-    private RecyclerView mForecastItemsRV;
     private ProgressBar mLoadingIndicatorPB;
-    private TextView mLoadingErrorMessageTV;
-    private TweetAdapter mTweetAdapter;
+    private TextView mErrorMessageTV;
+    private GitHubSearchAdapter mGitHubSearchAdapter;
 
-    private TwitterViewModel mViewModel;
+    private GitHubSearchViewModel mViewModel;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-//        SharedPreferences.getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         mSearchBoxET = findViewById(R.id.et_search_box);
-        Button searchButton = (Button)findViewById(R.id.btn_search);
+        mSearchResultsRV = findViewById(R.id.rv_search_results);
 
+        mSearchResultsRV.setLayoutManager(new LinearLayoutManager(this));
+        mSearchResultsRV.setHasFixedSize(true);
 
-        // Remove shadow under action bar.
-//        getSupportActionBar().setElevation(0);
-
-//        mForecastLocationTV = findViewById(R.id.tv_forecast_location);
-//        mForecastLocationTV.setText(WeatherPreferences.getDefaultForecastLocation());
+        mGitHubSearchAdapter = new GitHubSearchAdapter(this);
+        mSearchResultsRV.setAdapter(mGitHubSearchAdapter);
 
         mLoadingIndicatorPB = findViewById(R.id.pb_loading_indicator);
-        mLoadingErrorMessageTV = findViewById(R.id.tv_loading_error_message);
-        mForecastItemsRV = findViewById(R.id.rv_forecast_items);
+        mErrorMessageTV = findViewById(R.id.tv_error_message);
 
-        mTweetAdapter = new TweetAdapter(this);
-        mForecastItemsRV.setAdapter(mTweetAdapter);
-        mForecastItemsRV.setLayoutManager(new LinearLayoutManager(this));
-        mForecastItemsRV.setHasFixedSize(true);
+        mViewModel = new ViewModelProvider(this).get(GitHubSearchViewModel.class);
 
-        mViewModel = new ViewModelProvider(this).get(TwitterViewModel.class);
-
-        mViewModel.getSearchResults().observe(this, new Observer<ArrayList<TweetItem>>() {
+        mViewModel.getSearchResults().observe(this, new Observer<List<GitHubRepo>>() {
             @Override
-            public void onChanged(ArrayList<TweetItem> tweetItems) {
-//                  mForecastAdapter.updateForecastItems(new ArrayList<ForecastItem>(forecastItems));
-                mTweetAdapter.updateForecastItems(tweetItems);
+            public void onChanged(List<GitHubRepo> gitHubRepos) {
+                mGitHubSearchAdapter.updateSearchResults(gitHubRepos);
             }
         });
 
         mViewModel.getLoadingStatus().observe(this, new Observer<Status>() {
             @Override
             public void onChanged(Status status) {
-                if (status == Status.LOADING){
+                if (status == Status.LOADING) {
                     mLoadingIndicatorPB.setVisibility(View.VISIBLE);
-                } else if (status == Status.SUCCESS){
+                } else if (status == Status.SUCCESS) {
                     mLoadingIndicatorPB.setVisibility(View.INVISIBLE);
-                    mForecastItemsRV.setVisibility(View.VISIBLE);
-                    mLoadingErrorMessageTV.setVisibility(View.INVISIBLE);
+                    mSearchResultsRV.setVisibility(View.VISIBLE);
+                    mErrorMessageTV.setVisibility(View.INVISIBLE);
                 } else {
                     mLoadingIndicatorPB.setVisibility(View.INVISIBLE);
-                    mForecastItemsRV.setVisibility(View.INVISIBLE);
-                    mLoadingErrorMessageTV.setVisibility(View.VISIBLE);
+                    mSearchResultsRV.setVisibility(View.INVISIBLE);
+                    mErrorMessageTV.setVisibility(View.VISIBLE);
                 }
             }
         });
 
-//        loadForecast();
-    }
-
-    @Override
-    public void onForecastItemClick(TweetItem tweetItem) {
-        Intent intent = new Intent(this, TweetItemDetailActivity.class);
-        intent.putExtra(TwitterUtils.EXTRA_FORECAST_ITEM, tweetItem);
-        startActivity(intent);
+        Button searchButton = findViewById(R.id.btn_search);
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String searchQuery = mSearchBoxET.getText().toString();
+                if (!TextUtils.isEmpty(searchQuery)) {
+                    doGitHubSearch(searchQuery);
+                }
+            }
+        });
     }
 
     @Override
@@ -111,13 +99,8 @@ public class MainActivity extends AppCompatActivity implements TweetAdapter.OnFo
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String location = preferences.getString(getString(R.string.pref_location_key), getString(R.string.pref_location_default));
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_location:
-                showForecastLocation();
-                return true;
             case R.id.action_settings:
                 Intent intent = new Intent(this, SettingsActivity.class);
                 startActivity(intent);
@@ -127,70 +110,36 @@ public class MainActivity extends AppCompatActivity implements TweetAdapter.OnFo
         }
     }
 
-    public void loadForecast() {
-//        String openWeatherMapForecastURL = OpenWeatherMapUtils.buildForecastURL(
-//                WeatherPreferences.getDefaultForecastLocation(),
-//                WeatherPreferences.getDefaultTemperatureUnits()
-//        );
-//        Log.d(TAG, "got forecast url: " + openWeatherMapForecastURL);
-//        mViewModel.loadSearchResults(openWeatherMapForecastURL);
+    @Override
+    public void onSearchResultClicked(GitHubRepo repo) {
+        Intent intent = new Intent(this, TweetDetailActivity.class);
+        intent.putExtra(TweetDetailActivity.EXTRA_GITHUB_REPO, repo);
+        startActivity(intent);
+    }
+
+    private void doGitHubSearch(String searchQuery) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        PreferenceManager.setDefaultValues(this, R.xml.prefs, false);
-        String units = preferences.getString(getString(R.string.pref_temp_key),
-                getString(R.string.pref_temp_default));
-        String location = preferences.getString(getString(R.string.pref_location_key), getString(R.string.pref_location_default));
-        if(units.equals("imperial")){
-            TweetPreferences.setDefaultTemperatureUnits("F");
-        } else if (units.equals("metric")){
-            TweetPreferences.setDefaultTemperatureUnits("C");
-        } else if (units.equals("kelvin")){
-            TweetPreferences.setDefaultTemperatureUnits("K");
-        }
-//        mForecastLocationTV.setText(location);
-        mViewModel.loadSearchResults(location, units);
-//        new OpenWeatherMapForecastTask().execute(openWeatherMapForecastURL);
-    }
-
-    public void showForecastLocation() {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String location = preferences.getString(getString(R.string.pref_location_key), getString(R.string.pref_location_default));
-        Uri geoUri = Uri.parse("geo:0,0").buildUpon()
-                .appendQueryParameter("q", location)
-                .build();
-        Intent mapIntent = new Intent(Intent.ACTION_VIEW, geoUri);
-        if (mapIntent.resolveActivity(getPackageManager()) != null) {
-            startActivity(mapIntent);
-        }
-    }
-
-    @Override
-    protected void onStart(){
-        super.onStart();
-        Log.d(TAG, "onStart()");
-    }
-
-    @Override
-    protected void onResume(){
-        super.onResume();
-        Log.d(TAG, "onResume()");
-//        loadForecast();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Log.d(TAG, "onPause()");
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Log.d(TAG, "onStop()");
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.d(TAG, "onDestroy()");
+        String sort = preferences.getString(
+                getString(R.string.pref_sort_key),
+                getString(R.string.pref_sort_default)
+        );
+        String language = preferences.getString(
+                getString(R.string.pref_language_key),
+                getString(R.string.pref_language_default)
+        );
+        String user = preferences.getString(
+                getString(R.string.pref_user_key), ""
+        );
+        boolean searchInName = preferences.getBoolean(
+                getString(R.string.pref_in_name_key), true
+        );
+        boolean searchInDescription = preferences.getBoolean(
+                getString(R.string.pref_in_description_key), true
+        );
+        boolean searchInReadme = preferences.getBoolean(
+                getString(R.string.pref_in_readme_key), true
+        );
+        mViewModel.loadSearchResults(searchQuery, sort, language, user, searchInName,
+                searchInDescription, searchInReadme);
     }
 }
