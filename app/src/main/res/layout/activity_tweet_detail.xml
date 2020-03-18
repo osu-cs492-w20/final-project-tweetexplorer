@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".TweetDetailActivity">
+
+    <TextView
+        android:id="@+id/tv_tweet_user"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:textSize="32sp"
+        android:textColor="#14171A"
+        android:text="Tweet by @someone"/>
+
+    <LinearLayout
+        android:id="@+id/ll_tweet_location_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:src="@drawable/ic_location_pin"/>
+
+        <TextView
+            android:id="@+id/tv_tweet_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:textSize="28sp"
+            android:textColor="#14171A"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_tweet_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:textSize="22sp"
+        android:text="Dummy tweet content"/>
+
+</LinearLayout>
