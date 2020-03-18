@@ -2,20 +2,20 @@ package com.example.android.tweetexplorer.data;
 
 import android.os.AsyncTask;
 
-import com.example.android.tweetexplorer.utils.GitHubUtils;
+import com.example.android.tweetexplorer.utils.TwitterUtils;
 import com.example.android.tweetexplorer.utils.NetworkUtils;
 
 import java.io.IOException;
 import java.util.List;
 
-public class GitHubSearchAsyncTask extends AsyncTask<String, Void, String> {
+public class TwitterAsyncTask extends AsyncTask<String, Void, String> {
     private Callback mCallback;
 
     public interface Callback {
-        void onSearchFinished(List<GitHubRepo> searchResults);
+        void onSearchFinished(List<Tweet> searchResults);
     }
 
-    public GitHubSearchAsyncTask(Callback callback) {
+    public TwitterAsyncTask(Callback callback) {
         mCallback = callback;
     }
 
@@ -33,9 +33,9 @@ public class GitHubSearchAsyncTask extends AsyncTask<String, Void, String> {
 
     @Override
     protected void onPostExecute(String s) {
-        List<GitHubRepo> searchResults = null;
+        List<Tweet> searchResults = null;
         if (s != null) {
-            searchResults = GitHubUtils.parseGitHubSearchResults(s);
+            searchResults = TwitterUtils.parseTimelineResults(s);
         }
         mCallback.onSearchFinished(searchResults);
     }

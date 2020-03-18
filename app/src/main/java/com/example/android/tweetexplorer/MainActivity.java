@@ -20,21 +20,21 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.example.android.tweetexplorer.data.GitHubRepo;
+import com.example.android.tweetexplorer.data.Tweet;
 import com.example.android.tweetexplorer.data.Status;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements GitHubSearchAdapter.OnSearchResultClickListener {
+public class MainActivity extends AppCompatActivity implements TwitterAdapter.OnSearchResultClickListener {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private RecyclerView mSearchResultsRV;
     private EditText mSearchBoxET;
     private ProgressBar mLoadingIndicatorPB;
     private TextView mErrorMessageTV;
-    private GitHubSearchAdapter mGitHubSearchAdapter;
+    private TwitterAdapter mTwitterAdapter;
 
-    private GitHubSearchViewModel mViewModel;
+    private TwitterViewModel mViewModel;
 
 
     @Override
@@ -48,18 +48,18 @@ public class MainActivity extends AppCompatActivity implements GitHubSearchAdapt
         mSearchResultsRV.setLayoutManager(new LinearLayoutManager(this));
         mSearchResultsRV.setHasFixedSize(true);
 
-        mGitHubSearchAdapter = new GitHubSearchAdapter(this);
-        mSearchResultsRV.setAdapter(mGitHubSearchAdapter);
+        mTwitterAdapter = new TwitterAdapter(this);
+        mSearchResultsRV.setAdapter(mTwitterAdapter);
 
         mLoadingIndicatorPB = findViewById(R.id.pb_loading_indicator);
         mErrorMessageTV = findViewById(R.id.tv_error_message);
 
-        mViewModel = new ViewModelProvider(this).get(GitHubSearchViewModel.class);
+        mViewModel = new ViewModelProvider(this).get(TwitterViewModel.class);
 
-        mViewModel.getSearchResults().observe(this, new Observer<List<GitHubRepo>>() {
+        mViewModel.getSearchResults().observe(this, new Observer<List<Tweet>>() {
             @Override
-            public void onChanged(List<GitHubRepo> gitHubRepos) {
-                mGitHubSearchAdapter.updateSearchResults(gitHubRepos);
+            public void onChanged(List<Tweet> tweets) {
+                mTwitterAdapter.updateTweets(tweets);
             }
         });
 
@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements GitHubSearchAdapt
             public void onClick(View v) {
                 String searchQuery = mSearchBoxET.getText().toString();
                 if (!TextUtils.isEmpty(searchQuery)) {
-                    doGitHubSearch(searchQuery);
+                    doTimelineSearch(searchQuery);
                 }
             }
         });
@@ -111,35 +111,18 @@ public class MainActivity extends AppCompatActivity implements GitHubSearchAdapt
     }
 
     @Override
-    public void onSearchResultClicked(GitHubRepo repo) {
+    public void onSearchResultClicked(Tweet tweet) {
         Intent intent = new Intent(this, TweetDetailActivity.class);
-        intent.putExtra(TweetDetailActivity.EXTRA_GITHUB_REPO, repo);
+        intent.putExtra(TweetDetailActivity.EXTRA_TWEET, tweet);
         startActivity(intent);
     }
 
-    private void doGitHubSearch(String searchQuery) {
+    private void doTimelineSearch(String screenName) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String sort = preferences.getString(
-                getString(R.string.pref_sort_key),
-                getString(R.string.pref_sort_default)
-        );
-        String language = preferences.getString(
-                getString(R.string.pref_language_key),
-                getString(R.string.pref_language_default)
-        );
-        String user = preferences.getString(
-                getString(R.string.pref_user_key), ""
-        );
-        boolean searchInName = preferences.getBoolean(
-                getString(R.string.pref_in_name_key), true
-        );
-        boolean searchInDescription = preferences.getBoolean(
-                getString(R.string.pref_in_description_key), true
-        );
-        boolean searchInReadme = preferences.getBoolean(
-                getString(R.string.pref_in_readme_key), true
-        );
-        mViewModel.loadSearchResults(searchQuery, sort, language, user, searchInName,
-                searchInDescription, searchInReadme);
+//        String sort = preferences.getString(
+//                getString(R.string.pref_sort_key),
+//                getString(R.string.pref_sort_default)
+//        );
+        mViewModel.loadSearchResults(screenName);
     }
 }

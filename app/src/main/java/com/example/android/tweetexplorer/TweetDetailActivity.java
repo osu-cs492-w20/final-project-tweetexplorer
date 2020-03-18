@@ -10,61 +10,68 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.android.tweetexplorer.data.GitHubRepo;
+import com.example.android.tweetexplorer.data.Tweet;
 
 import java.util.List;
 
 public class TweetDetailActivity extends AppCompatActivity {
-    public static final String EXTRA_GITHUB_REPO = "GitHubRepo";
+    public static final String EXTRA_TWEET = "Tweet";
 
-    private GitHubRepo mRepo;
+    private Tweet mTweet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_repo_detail);
+        setContentView(R.layout.activity_tweet_detail);
 
         Intent intent = getIntent();
-        if (intent != null && intent.hasExtra(EXTRA_GITHUB_REPO)) {
-            mRepo = (GitHubRepo)intent.getSerializableExtra(EXTRA_GITHUB_REPO);
+        if (intent != null && intent.hasExtra(EXTRA_TWEET)) {
+            mTweet = (Tweet)intent.getSerializableExtra(EXTRA_TWEET);
 
-            TextView repoNameTV = findViewById(R.id.tv_repo_name);
-            repoNameTV.setText(mRepo.full_name);
+            TextView tweetUserTV = findViewById(R.id.tv_tweet_user);
+            tweetUserTV.setText("Tweet from @" + mTweet.user.screen_name);
 
-            TextView repoDescriptionTV = findViewById(R.id.tv_repo_description);
-            repoDescriptionTV.setText(mRepo.description);
+            TextView tweetTextTV = findViewById(R.id.tv_tweet_text);
+            tweetTextTV.setText(mTweet.text);
 
-            TextView repoStarsTV = findViewById(R.id.tv_repo_stars);
-            repoStarsTV.setText(Integer.toString(mRepo.stargazers_count));
+            TextView tweetLocationTV = findViewById(R.id.tv_tweet_location);
+            if (mTweet.place != null && mTweet.place.full_name != null) {
+                tweetLocationTV.setText(mTweet.place.full_name);
+            } else {
+                LinearLayout tweetLocationLayout = findViewById(R.id.ll_tweet_location_layout);
+                tweetLocationLayout.setVisibility(View.INVISIBLE);
+            }
         }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.repo_detail, menu);
+        getMenuInflater().inflate(R.menu.tweet_detail, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_view_repo:
-                viewRepoOnWeb();
+            case R.id.action_view_tweet:
+                viewTweetURL();
                 return true;
             case R.id.action_share:
-                shareRepo();
+                shareTweet();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    private void viewRepoOnWeb() {
-        if (mRepo != null) {
-            Uri repoUri = Uri.parse(mRepo.html_url);
-            Intent webIntent = new Intent(Intent.ACTION_VIEW, repoUri);
+    private void viewTweetURL() {
+        if (mTweet != null) {
+            Uri tweetUri = Uri.parse(getString(R.string.tweet_full_url, mTweet.id_str));
+            Intent webIntent = new Intent(Intent.ACTION_VIEW, tweetUri);
 
             PackageManager pm = getPackageManager();
             List<ResolveInfo> activities = pm.queryIntentActivities(webIntent, PackageManager.MATCH_DEFAULT_ONLY);
@@ -74,9 +81,9 @@ public class TweetDetailActivity extends AppCompatActivity {
         }
     }
 
-    private void shareRepo() {
-        if (mRepo != null) {
-            String shareText = getString(R.string.share_repo_text, mRepo.full_name, mRepo.html_url);
+    private void shareTweet() {
+        if (mTweet != null) {
+            String shareText = getString(R.string.tweet_full_url, mTweet.id_str);
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
             shareIntent.putExtra(Intent.EXTRA_TEXT, shareText);
             shareIntent.setType("text/plain");
