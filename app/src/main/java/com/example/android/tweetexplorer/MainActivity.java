@@ -2,16 +2,19 @@ package com.example.android.tweetexplorer;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,9 +22,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.tweetexplorer.data.Tweet;
 import com.example.android.tweetexplorer.data.Status;
+import com.example.android.tweetexplorer.utils.GeoUtils;
 
 import java.util.List;
 
@@ -36,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements TwitterAdapter.On
 
     private TwitterViewModel mViewModel;
 
+    private GeoUtils mGeoUtils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +96,9 @@ public class MainActivity extends AppCompatActivity implements TwitterAdapter.On
                 }
             }
         });
+
+        //Ask for user permission
+        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
     }
 
     @Override

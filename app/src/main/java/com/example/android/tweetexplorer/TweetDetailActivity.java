@@ -2,8 +2,10 @@ package com.example.android.tweetexplorer;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
@@ -17,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.android.tweetexplorer.data.Tweet;
+import com.example.android.tweetexplorer.utils.GeoUtils;
 
 import java.util.List;
 
@@ -24,6 +27,7 @@ public class TweetDetailActivity extends AppCompatActivity {
     public static final String EXTRA_TWEET = "Tweet";
 
     private Tweet mTweet;
+    private GeoUtils mGeoUtils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +51,18 @@ public class TweetDetailActivity extends AppCompatActivity {
                 LinearLayout tweetLocationLayout = findViewById(R.id.ll_tweet_location_layout);
                 tweetLocationLayout.setVisibility(View.INVISIBLE);
             }
+
+            //Distance
+            //Initiate variables
+            TextView geoTV = findViewById(R.id.tv_tweet_distance);
+            mGeoUtils = new GeoUtils();
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+            String distance_unit = preferences.getString(getString(R.string.pref_unit_key), getString(R.string.pref_unit_default));
+
+            //Calculate distance
+            String result = mGeoUtils.calculate(getApplicationContext(), mTweet.place.bounding_box.coordinates.get(0).get(0).get(1), mTweet.place.bounding_box.coordinates.get(0).get(0).get(0), distance_unit);
+            //Set result string to TextView
+            geoTV.setText(result);
         }
     }
 
