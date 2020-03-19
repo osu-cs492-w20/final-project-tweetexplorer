@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="pref_sort_entries">
-        <item>@string/pref_sort_entry_best_match</item>
-        <item>@string/pref_sort_entry_stars</item>
-        <item>@string/pref_sort_entry_forks</item>
-        <item>@string/pref_sort_entry_updated</item>
+    <string-array name="pref_unit_entries">
+        <item>@string/pref_unit_entry_miles</item>
+        <item>@string/pref_unit_entry_km</item>
+        <item>@string/pref_unit_entry_yards</item>
     </string-array>
 
-    <string-array name="pref_sort_values">
-        <item></item>
-        <item>@string/pref_sort_value_stars</item>
-        <item>@string/pref_sort_value_forks</item>
-        <item>@string/pref_sort_value_updated</item>
+    <string-array name="pref_unit_values">
+        <item>@string/pref_unit_value_miles</item>
+        <item>@string/pref_unit_value_km</item>
+        <item>@string/pref_unit_value_yards</item>
     </string-array>
 
 </resources>
