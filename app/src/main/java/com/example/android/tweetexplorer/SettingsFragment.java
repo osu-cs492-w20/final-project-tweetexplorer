@@ -11,16 +11,16 @@ implements SharedPreferences.OnSharedPreferenceChangeListener {
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.prefs);
-        EditTextPreference userPref = findPreference(getString(R.string.pref_user_key));
-        userPref.setSummary(userPref.getText());
+//        EditTextPreference userPref = findPreference(getString(R.string.pref_user_key));
+//        userPref.setSummary(userPref.getText());
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals(getString(R.string.pref_user_key))) {
-            EditTextPreference preference = findPreference(key);
-            preference.setSummary(preference.getText());
-        }
+//        if (key.equals(getString(R.string.pref_user_key))) {
+//            EditTextPreference preference = findPreference(key);
+//            preference.setSummary(preference.getText());
+//        }
     }
 
     @Override

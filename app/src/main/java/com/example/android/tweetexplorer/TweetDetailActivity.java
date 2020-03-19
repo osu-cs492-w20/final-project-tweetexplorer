@@ -7,7 +7,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
+import android.nfc.Tag;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -63,6 +65,9 @@ public class TweetDetailActivity extends AppCompatActivity {
             case R.id.action_share:
                 shareTweet();
                 return true;
+            case R.id.action_location:
+                viewMap();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -90,6 +95,20 @@ public class TweetDetailActivity extends AppCompatActivity {
 
             Intent chooserIntent = Intent.createChooser(shareIntent, null);
             startActivity(chooserIntent);
+        }
+    }
+
+    private void viewMap(){
+        String coord1 = mTweet.place.bounding_box.coordinates.get(0).get(0).get(0).toString();
+        String coord2 = mTweet.place.bounding_box.coordinates.get(0).get(0).get(1).toString();
+        String location = coord2 + "," + coord1;
+        Log.d("testing: ", "location is:"+ location);
+        Uri geoUri = Uri.parse("geo:0,0").buildUpon()
+                .appendQueryParameter("q", location)
+                .build();
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, geoUri);
+        if(mapIntent.resolveActivity((getPackageManager())) != null){
+            startActivity(mapIntent);
         }
     }
 }
