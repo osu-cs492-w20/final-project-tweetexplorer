@@ -39,7 +39,7 @@ public class TweetDetailActivity extends AppCompatActivity {
             mTweet = (Tweet)intent.getSerializableExtra(EXTRA_TWEET);
 
             TextView tweetUserTV = findViewById(R.id.tv_tweet_user);
-            tweetUserTV.setText("Tweet from @" + mTweet.user.screen_name);
+            tweetUserTV.setText("@" + mTweet.user.screen_name);
 
             TextView tweetTextTV = findViewById(R.id.tv_tweet_text);
             tweetTextTV.setText(mTweet.text);
@@ -59,9 +59,13 @@ public class TweetDetailActivity extends AppCompatActivity {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
             String distance_unit = preferences.getString(getString(R.string.pref_unit_key), getString(R.string.pref_unit_default));
 
+
             //Calculate distance
             String result = mGeoUtils.calculate(getApplicationContext(), mTweet.place.bounding_box.coordinates.get(0).get(0).get(1), mTweet.place.bounding_box.coordinates.get(0).get(0).get(0), distance_unit);
             //Set result string to TextView
+            if (result.endsWith("mile")) {
+                result = result.substring(0, result.length()-2);
+            }
             geoTV.setText(result);
         }
     }
